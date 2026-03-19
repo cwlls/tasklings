@@ -2,8 +2,8 @@
 Entry point for the Tasklings application.
 
 Usage:
-    python run.py [--host HOST] [--port PORT] [--debug]
-    hypercorn run:app
+    uv run python run.py [--host HOST] [--port PORT] [--debug]
+    uv run hypercorn run:app
 """
 import argparse
 import sys

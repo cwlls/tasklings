@@ -105,7 +105,7 @@ ipython_config.py
 #   Similar to Pipfile.lock, it is generally recommended to include uv.lock in version control.
 #   This is especially recommended for binary packages to ensure reproducibility, and is more
 #   commonly ignored for libraries.
-#uv.lock
+# uv.lock is intentionally tracked in version control for this application.
 
 # poetry
 #   Similar to Pipfile.lock, it is generally recommended to include poetry.lock in version control.
@@ -144,7 +144,7 @@ celerybeat.pid
 # Environments
 .env
 .envrc
-.venv
+.venv/
 env/
 venv/
 ENV/
