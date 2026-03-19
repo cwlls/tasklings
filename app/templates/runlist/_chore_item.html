@@ -1,0 +1,51 @@
+{#
+  Single chore assignment row.
+  Variables:
+    assignment (dict) -- chore_assignment row joined with chore_definition fields
+#}
+{% set is_done = assignment.status in ('completed', 'verified') %}
+<li
+  class="chore-item chore-item--{{ assignment.status }}"
+  id="chore-{{ assignment.id }}"
+  data-assignment-id="{{ assignment.id }}"
+>
+  <span class="chore-item__icon" aria-hidden="true">
+    {{ assignment.icon or '📋' }}
+  </span>
+
+  <div class="chore-item__body">
+    <span class="chore-item__title">{{ assignment.title }}</span>
+    {% if assignment.chore_description %}
+      <span class="chore-item__desc">{{ assignment.chore_description }}</span>
+    {% endif %}
+  </div>
+
+  <div class="chore-item__meta">
+    {% if assignment.lumin_value %}
+      <span class="chore-item__lumins" aria-label="{{ assignment.lumin_value }} Lumins">
+        ✨ {{ assignment.lumin_value }}
+      </span>
+    {% endif %}
+
+    {% if is_done %}
+      <span class="chore-item__status chore-item__status--done" aria-label="Completed">
+        ✅
+      </span>
+    {% elif assignment.status == 'skipped' %}
+      <span class="chore-item__status chore-item__status--skipped" aria-label="Skipped">
+        ⏭️
+      </span>
+    {% else %}
+      <button
+        class="chore-item__complete-btn"
+        hx-post="/api/v1/my/assignments/{{ assignment.id }}/complete"
+        hx-target="#chore-{{ assignment.id }}"
+        hx-swap="outerHTML"
+        hx-headers='{"Content-Type": "application/json"}'
+        aria-label="Mark {{ assignment.title }} as complete"
+      >
+        Done
+      </button>
+    {% endif %}
+  </div>
+</li>

@@ -52,21 +52,27 @@ def create_app(config: Config | None = None) -> Quart:
     # -----------------------------------------------------------------------
     # Blueprints -- views
     # -----------------------------------------------------------------------
-    from app.routes.views.index import index_bp
     from app.routes.views.auth import auth_views_bp
+    from app.routes.views.runlist import runlist_views
 
-    app.register_blueprint(index_bp)
     app.register_blueprint(auth_views_bp)
+    app.register_blueprint(runlist_views)
 
     # -----------------------------------------------------------------------
     # Blueprints -- API
     # -----------------------------------------------------------------------
-    from app.routes.api.auth import auth_api_bp
-    from app.routes.api.tokens import tokens_api_bp
     from app.routes.api.admin import admin_api_bp
+    from app.routes.api.assignments import assignments_api
+    from app.routes.api.auth import auth_api_bp
+    from app.routes.api.chores import chores_api
+    from app.routes.api.members import members_api
+    from app.routes.api.tokens import tokens_api_bp
 
     app.register_blueprint(auth_api_bp)
     app.register_blueprint(tokens_api_bp)
     app.register_blueprint(admin_api_bp)
+    app.register_blueprint(assignments_api)
+    app.register_blueprint(chores_api)
+    app.register_blueprint(members_api)
 
     return app

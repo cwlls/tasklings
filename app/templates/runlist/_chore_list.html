@@ -1,0 +1,23 @@
+{#
+  Chore list partial -- used for initial render and HTMX full-list swaps.
+  Variables:
+    assignments (list[dict]) -- chore_assignment rows joined with chore_definition
+#}
+<ul
+  class="chore-list"
+  id="chore-list"
+  hx-get="/runlist"
+  hx-trigger="none"
+  hx-swap="outerHTML"
+>
+  {% if assignments %}
+    {% for assignment in assignments %}
+      {% include "runlist/_chore_item.html" %}
+    {% endfor %}
+  {% else %}
+    <li class="chore-list__empty">
+      <span aria-hidden="true">🎉</span>
+      No chores today — you're all caught up!
+    </li>
+  {% endif %}
+</ul>

@@ -187,6 +187,38 @@ async def update_assignment_status(
     return await get_assignment(assignment_id)
 
 
+# ---------------------------------------------------------------------------
+# Chore Assignees (constant-chore member mappings)
+# ---------------------------------------------------------------------------
+
+async def get_assignees_for_chore(chore_id: str) -> list[str]:
+    """Return a list of member_ids assigned to a constant chore."""
+    rows = await fetch_all(
+        "SELECT member_id FROM chore_assignee WHERE chore_id = ?",
+        (chore_id,),
+    )
+    return [row["member_id"] for row in rows]
+
+
+async def set_assignees_for_chore(chore_id: str, member_ids: list[str]) -> None:
+    """
+    Replace the assignee list for a chore.
+    Deletes all existing rows then inserts the provided member_ids.
+    """
+    from app.models.db import get_db
+    db = await get_db()
+    await db.execute(
+        "DELETE FROM chore_assignee WHERE chore_id = ?",
+        (chore_id,),
+    )
+    for member_id in member_ids:
+        await db.execute(
+            "INSERT INTO chore_assignee (chore_id, member_id) VALUES (?, ?)",
+            (chore_id, member_id),
+        )
+    await db.commit()
+
+
 async def assignments_exist_for_date(household_id: str, date: str) -> bool:
     """
     Return True if any chore assignments exist for this household on the given date.
