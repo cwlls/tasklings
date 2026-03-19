@@ -1,0 +1,39 @@
+{#
+  Stacked contribution bar.
+  Variables:
+    contributions (list[dict]) -- each has member_name, color, completed_count, total_chores
+#}
+{% set total_done = contributions | sum(attribute='completed_count') %}
+<div class="contrib-bar-wrap" aria-label="Member contributions">
+  <div class="contrib-bar">
+    {% for c in contributions %}
+      {% if c.completed_count > 0 and total_done > 0 %}
+        {% set pct = ((c.completed_count / total_done) * 100) | int %}
+        <div
+          class="contrib-bar__segment"
+          style="width: {{ pct }}%; background: {{ c.color }};"
+          title="{{ c.member_name }}: {{ c.completed_count }} chore(s)"
+        ></div>
+      {% endif %}
+    {% endfor %}
+  </div>
+  <ul class="contrib-legend">
+    {% for c in contributions %}
+      <li class="contrib-legend__item">
+        <span class="contrib-legend__dot" style="background: {{ c.color }};"></span>
+        <span class="contrib-legend__name">{{ c.member_name }}</span>
+        <span class="contrib-legend__count">{{ c.completed_count }}</span>
+      </li>
+    {% endfor %}
+  </ul>
+</div>
+
+<style>
+  .contrib-bar-wrap { display: flex; flex-direction: column; gap: 0.35rem; }
+  .contrib-bar { display: flex; height: 10px; border-radius: 99px; overflow: hidden; background: var(--color-surface-alt, #f3f4f6); }
+  .contrib-bar__segment { transition: width 0.3s; }
+  .contrib-legend { list-style: none; padding: 0; margin: 0; display: flex; flex-wrap: wrap; gap: 0.4rem 0.8rem; }
+  .contrib-legend__item { display: flex; align-items: center; gap: 0.3rem; font-size: 0.75rem; }
+  .contrib-legend__dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+  .contrib-legend__count { font-weight: 600; color: var(--color-text-muted, #6b7280); }
+</style>

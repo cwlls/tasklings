@@ -1,0 +1,40 @@
+{#
+  Solo quest card partial.
+  Variables:
+    quest (dict) -- quest row + progress, total_chores, done_chores keys
+#}
+{% set pct = ((quest.done_chores / quest.total_chores) * 100) | int if quest.total_chores > 0 else 0 %}
+{% set complete = quest.done_chores >= quest.total_chores and quest.total_chores > 0 %}
+
+<article class="quest-card{% if complete %} quest-card--complete{% endif %}" id="quest-{{ quest.id }}">
+  <div class="quest-card__header">
+    <h3 class="quest-card__name">{{ quest.name }}</h3>
+    {% if quest.bonus_lumins %}
+      <span class="quest-card__bonus" title="Bonus on completion">
+        ✨ +{{ quest.bonus_lumins }}
+      </span>
+    {% endif %}
+  </div>
+
+  {% if quest.description %}
+    <p class="quest-card__desc">{{ quest.description }}</p>
+  {% endif %}
+
+  <div class="quest-card__progress-bar-wrap">
+    <div class="quest-card__progress-bar">
+      <div class="quest-card__progress-fill" style="width: {{ pct }}%"></div>
+    </div>
+    <span class="quest-card__progress-label">
+      {{ quest.done_chores }} / {{ quest.total_chores }}
+      {% if complete %} ✅{% endif %}
+    </span>
+  </div>
+
+  <ul class="quest-card__chores">
+    {% for chore in quest.progress %}
+      {% include "quests/_quest_chore_item.html" %}
+    {% endfor %}
+  </ul>
+
+  <a href="/quests/{{ quest.id }}" class="quest-card__detail-link">View detail →</a>
+</article>

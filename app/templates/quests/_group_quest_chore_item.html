@@ -1,0 +1,50 @@
+{#
+  Single chore row in a group quest's shared pool.
+  Variables:
+    chore   (dict) -- progress item: title, icon, is_completed, claimed_by,
+                       claimed_by_name, claimed_at, completed_by_name, completed_at
+    gq      (dict) -- parent group quest
+    member  (dict) -- current authenticated member
+#}
+{% set is_mine_claim = chore.claimed_by == member.id %}
+
+<li class="gq-chore gq-chore--{{ 'done' if chore.is_completed else 'pending' }}" id="gq-chore-{{ gq.id }}-{{ chore.chore_id }}">
+  <span class="gq-chore__icon" aria-hidden="true">
+    {% if chore.is_completed %}✅{% elif chore.claimed_by %}🔖{% else %}⬜{% endif %}
+  </span>
+
+  <div class="gq-chore__body">
+    <span class="gq-chore__title">{{ chore.title }}</span>
+    {% if chore.is_completed %}
+      <span class="gq-chore__meta">Done by {{ chore.completed_by_name }}</span>
+    {% elif chore.claimed_by %}
+      <span class="gq-chore__meta">Claimed by {{ chore.claimed_by_name }}</span>
+    {% endif %}
+  </div>
+
+  <div class="gq-chore__actions">
+    {% if not chore.is_completed %}
+      {% if is_mine_claim %}
+        <button
+          class="gq-chore__btn gq-chore__btn--release"
+          hx-delete="/api/v1/group-quests/{{ gq.id }}/chores/{{ chore.chore_id }}/claim"
+          hx-target="#gq-{{ gq.id }}"
+          hx-swap="outerHTML"
+        >Release</button>
+      {% else %}
+        <button
+          class="gq-chore__btn gq-chore__btn--claim"
+          hx-post="/api/v1/group-quests/{{ gq.id }}/chores/{{ chore.chore_id }}/claim"
+          hx-target="#gq-{{ gq.id }}"
+          hx-swap="outerHTML"
+        >Claim</button>
+      {% endif %}
+      <button
+        class="gq-chore__btn gq-chore__btn--complete"
+        hx-post="/api/v1/group-quests/{{ gq.id }}/chores/{{ chore.chore_id }}/complete"
+        hx-target="#gq-{{ gq.id }}"
+        hx-swap="outerHTML"
+      >Done</button>
+    {% endif %}
+  </div>
+</li>

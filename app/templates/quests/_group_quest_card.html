@@ -1,0 +1,46 @@
+{#
+  Group quest card partial.
+  Variables:
+    gq (dict) -- group quest row + progress, done_chores, total_chores, contributions
+#}
+{% set pct = ((gq.done_chores / gq.total_chores) * 100) | int if gq.total_chores > 0 else 0 %}
+{% set complete = gq.done_chores >= gq.total_chores and gq.total_chores > 0 %}
+
+<article class="gq-card{% if complete %} gq-card--complete{% endif %}" id="gq-{{ gq.id }}">
+  <div class="gq-card__header">
+    <h3 class="gq-card__name">{{ gq.name }}</h3>
+    {% if gq.bonus_lumins %}
+      <span class="gq-card__bonus">✨ +{{ gq.bonus_lumins }}</span>
+    {% endif %}
+  </div>
+
+  {% if gq.description %}
+    <p class="gq-card__desc">{{ gq.description }}</p>
+  {% endif %}
+
+  {% if gq.reward_description %}
+    <p class="gq-card__reward">🎁 {{ gq.reward_description }}</p>
+  {% endif %}
+
+  {% if gq.deadline %}
+    <p class="gq-card__deadline">⏰ Due: {{ gq.deadline[:10] }}</p>
+  {% endif %}
+
+  <div class="gq-card__progress-bar-wrap">
+    <div class="gq-card__progress-bar">
+      <div class="gq-card__progress-fill" style="width: {{ pct }}%"></div>
+    </div>
+    <span class="gq-card__progress-label">
+      {{ gq.done_chores }} / {{ gq.total_chores }}
+      {% if complete %}✅{% endif %}
+    </span>
+  </div>
+
+  {% if gq.contributions %}
+    {% with contributions=gq.contributions %}
+      {% include "quests/_contribution_bar.html" %}
+    {% endwith %}
+  {% endif %}
+
+  <a href="/group-quests/{{ gq.id }}" class="gq-card__detail-link">View detail →</a>
+</article>

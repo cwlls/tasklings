@@ -1,0 +1,25 @@
+{#
+  Single chore row within a solo quest.
+  Variables:
+    chore (dict) -- progress item with 'completed', 'assignment_status', 'title', 'lumin_value'
+    quest (dict) -- parent quest (for IDs in hx-post target)
+#}
+<li class="quest-chore quest-chore--{{ 'done' if chore.completed else 'pending' }}">
+  <span class="quest-chore__icon" aria-hidden="true">
+    {% if chore.completed %}✅{% else %}⬜{% endif %}
+  </span>
+  <span class="quest-chore__title">{{ chore.title }}</span>
+  {% if chore.lumin_value %}
+    <span class="quest-chore__lumins">✨ {{ chore.lumin_value }}</span>
+  {% endif %}
+  {% if not chore.completed %}
+    <button
+      class="quest-chore__complete-btn"
+      hx-post="/api/v1/quests/{{ quest.id }}/chores/{{ chore.id }}/complete"
+      hx-target="#quest-{{ quest.id }}"
+      hx-swap="outerHTML"
+    >
+      Done
+    </button>
+  {% endif %}
+</li>

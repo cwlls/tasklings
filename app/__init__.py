@@ -53,12 +53,14 @@ def create_app(config: Config | None = None) -> Quart:
     # Blueprints -- views
     # -----------------------------------------------------------------------
     from app.routes.views.auth import auth_views_bp
+    from app.routes.views.quests import quests_views
     from app.routes.views.runlist import runlist_views
     from app.routes.views.store import store_views
 
     app.register_blueprint(auth_views_bp)
     app.register_blueprint(runlist_views)
     app.register_blueprint(store_views)
+    app.register_blueprint(quests_views)
 
     # -----------------------------------------------------------------------
     # Blueprints -- API
@@ -67,7 +69,9 @@ def create_app(config: Config | None = None) -> Quart:
     from app.routes.api.assignments import assignments_api
     from app.routes.api.auth import auth_api_bp
     from app.routes.api.chores import chores_api
+    from app.routes.api.group_quests import group_quests_api
     from app.routes.api.members import members_api
+    from app.routes.api.quests import quests_api
     from app.routes.api.store import store_api
     from app.routes.api.tokens import tokens_api_bp
     from app.routes.api.transactions import transactions_api
@@ -78,6 +82,8 @@ def create_app(config: Config | None = None) -> Quart:
     app.register_blueprint(assignments_api)
     app.register_blueprint(chores_api)
     app.register_blueprint(members_api)
+    app.register_blueprint(quests_api)
+    app.register_blueprint(group_quests_api)
     app.register_blueprint(store_api)
     app.register_blueprint(transactions_api)
 
