@@ -1,0 +1,114 @@
+{% extends "admin/base.html" %}
+{% block title %}New Quest — Admin{% endblock %}
+
+{% block admin_content %}
+<div class="flex gap items-center mb">
+  <a href="{{ url_for('admin_views.quests_list') }}" class="btn btn--ghost btn--sm">&larr; Back</a>
+  <h1>New Quest</h1>
+</div>
+
+<div class="card" style="max-width:540px;">
+  <form method="post" action="{{ url_for('admin_views.quest_new_post') }}">
+
+    {% if errors %}
+      {% for field, msg in errors.items() %}
+        <div class="form-error" style="margin-bottom:.5rem;">{{ msg }}</div>
+      {% endfor %}
+    {% endif %}
+
+    <div class="form-group">
+      <label class="form-label">Quest type</label>
+      <select class="form-select" name="quest_type" id="quest_type">
+        <option value="solo">Solo Quest</option>
+        <option value="group">Group Quest</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label" for="name">Name</label>
+      <input class="form-input{% if errors.name %} form-input--error{% endif %}"
+             id="name" name="name" type="text" required />
+    </div>
+
+    <div class="form-group">
+      <label class="form-label" for="description">Description <span class="text-muted">(optional)</span></label>
+      <textarea class="form-textarea" id="description" name="description" rows="2"></textarea>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label" for="bonus_lumins">Bonus Lumins</label>
+      <input class="form-input" id="bonus_lumins" name="bonus_lumins" type="number" min="0" value="0" />
+    </div>
+
+    <div class="form-group" id="solo-member-group">
+      <label class="form-label" for="member_id">Assign to member <span class="text-muted">(solo)</span></label>
+      <select class="form-select" id="member_id" name="member_id">
+        {% for m in members %}
+          <option value="{{ m.id }}">{{ m.name }}</option>
+        {% endfor %}
+      </select>
+    </div>
+
+    <div class="form-group" id="group-members-group" style="display:none;">
+      <label class="form-label">Initial members <span class="text-muted">(group)</span></label>
+      <div style="display:flex;flex-direction:column;gap:.35rem;">
+        {% for m in members %}
+        <label style="display:flex;align-items:center;gap:.5rem;cursor:pointer;">
+          <input type="checkbox" name="member_ids" value="{{ m.id }}" />
+          <span class="member-dot" style="background:{{ m.color }};"></span>
+          {{ m.name }}
+        </label>
+        {% endfor %}
+      </div>
+    </div>
+
+    <div class="form-group" id="reward-group" style="display:none;">
+      <label class="form-label" for="reward_description">Reward description <span class="text-muted">(group)</span></label>
+      <input class="form-input" id="reward_description" name="reward_description" type="text" />
+    </div>
+
+    <div class="form-group" id="deadline-group" style="display:none;">
+      <label class="form-label" for="deadline">Deadline <span class="text-muted">(group, optional)</span></label>
+      <input class="form-input" id="deadline" name="deadline" type="date" />
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Chores in this quest</label>
+      <div style="display:flex;flex-direction:column;gap:.35rem;">
+        {% for c in chores %}
+        <label style="display:flex;align-items:center;gap:.5rem;cursor:pointer;">
+          <input type="checkbox" name="chore_ids" value="{{ c.id }}" />
+          {{ c.icon or '' }} {{ c.title }}
+          <span class="lumin-badge" style="font-size:.7rem;">{{ c.lumin_value }}</span>
+        </label>
+        {% endfor %}
+      </div>
+    </div>
+
+    <div class="flex gap-sm" style="margin-top:1rem;">
+      <button type="submit" class="btn btn--primary">Create quest</button>
+      <a href="{{ url_for('admin_views.quests_list') }}" class="btn btn--ghost">Cancel</a>
+    </div>
+  </form>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+  const sel = document.getElementById("quest_type");
+  const soloMember = document.getElementById("solo-member-group");
+  const groupMembers = document.getElementById("group-members-group");
+  const reward = document.getElementById("reward-group");
+  const deadline = document.getElementById("deadline-group");
+
+  function update() {
+    const isGroup = sel.value === "group";
+    soloMember.style.display   = isGroup ? "none" : "";
+    groupMembers.style.display = isGroup ? "" : "none";
+    reward.style.display       = isGroup ? "" : "none";
+    deadline.style.display     = isGroup ? "" : "none";
+  }
+  sel.addEventListener("change", update);
+  update();
+</script>
+{% endblock %}

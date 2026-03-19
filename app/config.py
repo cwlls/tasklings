@@ -1,5 +1,12 @@
 """
 Application configuration. Reads from environment variables (populated via .env).
+
+Security TODOs:
+  - RATE_LIMIT_LOGIN: max failed login attempts per username before lockout.
+    Suggested: 10 attempts / 15 min window. Implement with an in-memory dict
+    or a Redis-backed store (quart-limiter or slowapi).
+  - RATE_LIMIT_API: general per-IP rate limit on /api/v1/.
+    Suggested: 300 req/min in prod. Not implemented yet.
 """
 import os
 from dataclasses import dataclass, field

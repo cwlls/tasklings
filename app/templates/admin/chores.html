@@ -1,0 +1,59 @@
+{% extends "admin/base.html" %}
+{% block title %}Chores — Admin{% endblock %}
+
+{% block admin_content %}
+<div class="flex gap items-center mb" style="justify-content:space-between;">
+  <h1>Chores</h1>
+  <a href="{{ url_for('admin_views.chore_new_form') }}" class="btn btn--primary btn--sm">+ Add chore</a>
+</div>
+
+<div class="card">
+  <div class="flex gap-sm" style="margin-bottom:.75rem;">
+    {% if include_inactive %}
+      <a href="{{ url_for('admin_views.chores_list') }}" class="btn btn--ghost btn--sm">Hide inactive</a>
+    {% else %}
+      <a href="{{ url_for('admin_views.chores_list', inactive='true') }}" class="btn btn--ghost btn--sm">Show inactive</a>
+    {% endif %}
+  </div>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr><th>Title</th><th>Type</th><th>Lumins</th><th>Assignees</th><th>Active</th><th></th></tr>
+      </thead>
+      <tbody>
+        {% for chore in chores %}
+        <tr>
+          <td>{{ chore.icon or '' }} {{ chore.title }}</td>
+          <td><span class="badge badge--muted">{{ chore.chore_type }}</span></td>
+          <td><span class="lumin-badge">{{ chore.lumin_value }}</span></td>
+          <td class="text-sm text-muted">
+            {% if chore.chore_type == 'constant' and chore.assignee_ids %}
+              {% for mid in chore.assignee_ids %}
+                {% for m in members if m.id == mid %}
+                  <span class="member-dot" style="background:{{ m.color }};" title="{{ m.name }}"></span>
+                  {{ m.name }}{% if not loop.last %}, {% endif %}
+                {% endfor %}
+              {% endfor %}
+            {% elif chore.chore_type == 'rotating' %}
+              rotating
+            {% else %}
+              &mdash;
+            {% endif %}
+          </td>
+          <td>
+            {% if chore.is_active %}
+              <span class="badge badge--success">yes</span>
+            {% else %}
+              <span class="badge badge--danger">no</span>
+            {% endif %}
+          </td>
+          <td>
+            <a href="{{ url_for('admin_views.chore_edit_form', chore_id=chore.id) }}" class="btn btn--ghost btn--sm">Edit</a>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

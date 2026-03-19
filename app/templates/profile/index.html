@@ -1,0 +1,129 @@
+{% extends "base.html" %}
+{% block title %}My Profile — Tasklings{% endblock %}
+
+{% block content %}
+<h1>Profile</h1>
+
+{# ── Avatar + balance summary ─────────────────────────────────────────────── #}
+<div class="card flex gap items-center" style="margin-bottom:1rem;">
+  {% if member.avatar %}
+    <img src="{{ member.avatar }}" alt="{{ member.name }}" class="avatar avatar--lg" />
+  {% else %}
+    <div class="avatar avatar--lg" style="background:{{ member.color }};">
+      {{ member.name[0] | upper }}
+    </div>
+  {% endif %}
+  <div>
+    <div class="fw-bold" style="font-size:1.15rem;">{{ member.name }}</div>
+    <div class="text-muted">@{{ member.username }}
+      <span class="badge badge--muted" style="margin-left:0.35rem;">{{ member.role }}</span>
+    </div>
+    <div class="lumin-badge" style="margin-top:0.35rem;">
+      <span data-lumin-balance>{{ member.balance }}</span> Lumins
+    </div>
+  </div>
+</div>
+
+{# ── Edit profile form ────────────────────────────────────────────────────── #}
+<div class="card">
+  <h2>Edit Profile</h2>
+  {% if errors %}
+    {% for field, msg in errors.items() %}
+      <div class="form-error" style="margin-bottom:.5rem;">{{ msg }}</div>
+    {% endfor %}
+  {% endif %}
+  <form method="post" action="{{ url_for('profile_views.update_profile') }}">
+    <div class="form-group">
+      <label class="form-label" for="name">Display name</label>
+      <input class="form-input{% if errors and errors.name %} form-input--error{% endif %}"
+             id="name" name="name" type="text"
+             value="{{ member.name }}" maxlength="80" />
+    </div>
+    <div class="form-group">
+      <label class="form-label" for="avatar">Avatar URL <span class="text-muted">(optional)</span></label>
+      <input class="form-input{% if errors and errors.avatar %} form-input--error{% endif %}"
+             id="avatar" name="avatar" type="url"
+             value="{{ member.avatar or '' }}" placeholder="https://…" />
+    </div>
+    <div class="form-group">
+      <label class="form-label" for="color">Theme color</label>
+      <div class="flex gap-sm items-center">
+        <input class="form-color" id="color" name="color" type="color"
+               value="{{ member.color or '#4A90D9' }}" />
+        <span class="text-sm text-muted" id="color-hex">{{ member.color or '#4A90D9' }}</span>
+      </div>
+      {% if errors and errors.color %}
+        <div class="form-error">{{ errors.color }}</div>
+      {% endif %}
+    </div>
+    <button type="submit" class="btn btn--primary">Save changes</button>
+  </form>
+</div>
+
+{# ── Change password form ─────────────────────────────────────────────────── #}
+<div class="card">
+  <h2>Change Password</h2>
+  {% if pw_error %}
+    <div class="form-error" style="margin-bottom:.5rem;">{{ pw_error }}</div>
+  {% endif %}
+  {% if pw_success %}
+    <div style="color:var(--color-success);font-size:.875rem;margin-bottom:.5rem;">{{ pw_success }}</div>
+  {% endif %}
+  <form method="post" action="{{ url_for('profile_views.change_password') }}">
+    <div class="form-group">
+      <label class="form-label" for="old_password">Current password</label>
+      <input class="form-input" id="old_password" name="old_password" type="password" autocomplete="current-password" />
+    </div>
+    <div class="form-group">
+      <label class="form-label" for="new_password">New password</label>
+      <input class="form-input" id="new_password" name="new_password" type="password" autocomplete="new-password" />
+    </div>
+    <button type="submit" class="btn btn--secondary">Change password</button>
+  </form>
+</div>
+
+{# ── Recent Lumins activity ────────────────────────────────────────────────── #}
+{% if recent_transactions %}
+<div class="card">
+  <h2>Recent Lumins</h2>
+  {% for tx in recent_transactions %}
+    <div class="flex gap-sm items-center" style="padding:.4rem 0;border-bottom:1px solid var(--color-border);">
+      <span class="fw-bold {% if tx.amount > 0 %}" style="color:var(--color-success){% else %}" style="color:var(--color-danger){% endif %}">
+        {{ "%+d" | format(tx.amount) }}
+      </span>
+      <span class="text-sm flex-1">{{ tx.reason | replace('_', ' ') | title }}</span>
+      <span class="text-xs text-muted">{{ tx.created_at[:10] }}</span>
+    </div>
+  {% endfor %}
+</div>
+{% endif %}
+
+{# ── Recent purchases ─────────────────────────────────────────────────────── #}
+{% if recent_purchases %}
+<div class="card">
+  <h2>Recent Purchases</h2>
+  {% for p in recent_purchases %}
+    <div class="flex gap-sm items-center" style="padding:.4rem 0;border-bottom:1px solid var(--color-border);">
+      <span class="text-sm flex-1">{{ p.item_name or "Item" }}</span>
+      <span class="badge {% if p.status == 'redeemed' %}badge--success{% else %}badge--muted{% endif %}">
+        {{ p.status }}
+      </span>
+      <span class="text-xs text-muted">{{ p.purchased_at[:10] }}</span>
+    </div>
+  {% endfor %}
+</div>
+{% endif %}
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+  // Live hex preview for color picker.
+  const colorInput = document.getElementById("color");
+  const colorHex   = document.getElementById("color-hex");
+  if (colorInput && colorHex) {
+    colorInput.addEventListener("input", () => {
+      colorHex.textContent = colorInput.value;
+    });
+  }
+</script>
+{% endblock %}

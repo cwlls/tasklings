@@ -1,0 +1,72 @@
+{% extends "admin/base.html" %}
+{% block title %}Admin Dashboard — Tasklings{% endblock %}
+
+{% block admin_content %}
+<h1>Dashboard</h1>
+<p class="text-muted">{{ household.name }} &mdash; {{ today }}</p>
+
+<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:.75rem;margin-bottom:1.25rem;">
+  <div class="card card--raised" style="text-align:center;">
+    <div style="font-size:2rem;font-weight:700;">{{ members | length }}</div>
+    <div class="text-muted text-sm">Members</div>
+  </div>
+  <div class="card card--raised" style="text-align:center;">
+    <div style="font-size:2rem;font-weight:700;color:var(--color-success);">
+      {{ assignment_summary.get('completed', 0) + assignment_summary.get('verified', 0) }}
+    </div>
+    <div class="text-muted text-sm">Done today</div>
+  </div>
+  <div class="card card--raised" style="text-align:center;">
+    <div style="font-size:2rem;font-weight:700;color:var(--color-warning);">
+      {{ assignment_summary.get('pending', 0) }}
+    </div>
+    <div class="text-muted text-sm">Pending today</div>
+  </div>
+</div>
+
+<h2>Members</h2>
+<div class="table-wrap card">
+  <table>
+    <thead>
+      <tr><th>Name</th><th>Role</th><th>Balance</th><th>Status</th></tr>
+    </thead>
+    <tbody>
+      {% for m in members %}
+      <tr>
+        <td>
+          <div class="flex gap-sm items-center">
+            <span class="member-dot" style="background:{{ m.color }};"></span>
+            {{ m.name }}
+          </div>
+        </td>
+        <td><span class="badge badge--{{ 'primary' if m.role == 'parent' else 'muted' }}">{{ m.role }}</span></td>
+        <td><span class="lumin-badge">{{ m.balance }}</span></td>
+        <td>
+          {% if m.is_active %}
+            <span class="badge badge--success">active</span>
+          {% else %}
+            <span class="badge badge--danger">inactive</span>
+          {% endif %}
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+<h2 class="mt-lg">Recent Activity</h2>
+<div class="card">
+  {% for tx in recent_transactions %}
+  <div class="flex gap-sm items-center" style="padding:.4rem 0;border-bottom:1px solid var(--color-border);">
+    <span class="fw-bold {% if tx.amount > 0 %}text-success{% else %}text-danger{% endif %}"
+          style="color:{{ 'var(--color-success)' if tx.amount > 0 else 'var(--color-danger)' }};min-width:3rem;">
+      {{ "%+d" | format(tx.amount) }}
+    </span>
+    <span class="text-sm flex-1">{{ tx.member_name }} &mdash; {{ tx.reason | replace('_',' ') | title }}</span>
+    <span class="text-xs text-muted">{{ tx.created_at[:10] }}</span>
+  </div>
+  {% else %}
+  <p class="text-muted text-sm">No transactions yet.</p>
+  {% endfor %}
+</div>
+{% endblock %}

@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="admin-layout">
+  <aside class="admin-sidebar">
+    <div class="admin-sidebar__title">Admin</div>
+    <nav>
+      <a href="{{ url_for('admin_views.dashboard') }}"
+         class="admin-nav-link{% if request.path == '/admin' %} active{% endif %}">
+        &#x2302; Dashboard
+      </a>
+      <a href="{{ url_for('admin_views.members_list') }}"
+         class="admin-nav-link{% if '/admin/members' in request.path %} active{% endif %}">
+        &#x1F465; Members
+      </a>
+      <a href="{{ url_for('admin_views.chores_list') }}"
+         class="admin-nav-link{% if '/admin/chores' in request.path %} active{% endif %}">
+        &#x2713; Chores
+      </a>
+      <a href="{{ url_for('admin_views.quests_list') }}"
+         class="admin-nav-link{% if '/admin/quests' in request.path %} active{% endif %}">
+        &#x2605; Quests
+      </a>
+      <a href="{{ url_for('admin_views.store_list') }}"
+         class="admin-nav-link{% if '/admin/store' in request.path %} active{% endif %}">
+        &#x1F6D2; Store
+      </a>
+      <a href="{{ url_for('admin_views.activity_log') }}"
+         class="admin-nav-link{% if '/admin/activity' in request.path %} active{% endif %}">
+        &#x1F4C4; Activity
+      </a>
+      <a href="{{ url_for('admin_views.tokens_list') }}"
+         class="admin-nav-link{% if '/admin/tokens' in request.path %} active{% endif %}">
+        &#x1F511; API Tokens
+      </a>
+    </nav>
+  </aside>
+  <div class="admin-content">
+    {% block admin_content %}{% endblock %}
+  </div>
+</div>
+{% endblock %}

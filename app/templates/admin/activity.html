@@ -1,0 +1,34 @@
+{% extends "admin/base.html" %}
+{% block title %}Activity — Admin{% endblock %}
+
+{% block admin_content %}
+<h1>Activity Log</h1>
+<p class="text-muted">Recent Lumin transactions across all members.</p>
+
+<div class="card">
+  {% for tx in transactions %}
+  <div class="flex gap items-center" style="padding:.5rem 0;border-bottom:1px solid var(--color-border);">
+    <span class="member-dot" style="background:{{ tx.member_color }};flex-shrink:0;"></span>
+    <span class="text-sm" style="min-width:90px;">{{ tx.member_name }}</span>
+    <span class="fw-bold" style="color:{{ 'var(--color-success)' if tx.amount > 0 else 'var(--color-danger)' }};min-width:3.5rem;">
+      {{ "%+d" | format(tx.amount) }}
+    </span>
+    <span class="badge badge--muted" style="flex-shrink:0;">{{ tx.reason | replace('_',' ') }}</span>
+    <span class="text-muted text-xs flex-1" style="text-align:right;">{{ tx.created_at[:19] | replace('T',' ') }}</span>
+  </div>
+  {% else %}
+  <p class="text-muted text-sm">No transactions yet.</p>
+  {% endfor %}
+</div>
+
+<div class="flex gap-sm mt" style="justify-content:center;">
+  {% if offset > 0 %}
+    <a href="{{ url_for('admin_views.activity_log', limit=limit, offset=[offset-limit,0]|max) }}"
+       class="btn btn--ghost btn--sm">&larr; Newer</a>
+  {% endif %}
+  {% if transactions | length == limit %}
+    <a href="{{ url_for('admin_views.activity_log', limit=limit, offset=offset+limit) }}"
+       class="btn btn--ghost btn--sm">Older &rarr;</a>
+  {% endif %}
+</div>
+{% endblock %}

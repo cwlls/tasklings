@@ -1,0 +1,81 @@
+{% extends "admin/base.html" %}
+{% block title %}{{ 'Edit' if chore else 'New' }} Chore — Admin{% endblock %}
+
+{% block admin_content %}
+<div class="flex gap items-center mb">
+  <a href="{{ url_for('admin_views.chores_list') }}" class="btn btn--ghost btn--sm">&larr; Back</a>
+  <h1>{{ 'Edit' if chore else 'New' }} Chore</h1>
+</div>
+
+<div class="card" style="max-width:520px;">
+  <form method="post"
+        action="{{ url_for('admin_views.chore_edit_post', chore_id=chore.id) if chore else url_for('admin_views.chore_new_post') }}">
+
+    {% if errors %}
+      {% for field, msg in errors.items() %}
+        <div class="form-error" style="margin-bottom:.5rem;">{{ msg }}</div>
+      {% endfor %}
+    {% endif %}
+
+    <div class="form-group">
+      <label class="form-label" for="title">Title</label>
+      <input class="form-input{% if errors.title %} form-input--error{% endif %}"
+             id="title" name="title" type="text" required
+             value="{{ chore.title if chore else '' }}" />
+    </div>
+
+    <div class="form-group">
+      <label class="form-label" for="description">Description <span class="text-muted">(optional)</span></label>
+      <textarea class="form-textarea" id="description" name="description" rows="2">{{ chore.description if chore else '' }}</textarea>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label" for="icon">Icon / emoji <span class="text-muted">(optional)</span></label>
+      <input class="form-input" id="icon" name="icon" type="text" maxlength="8"
+             value="{{ chore.icon if chore else '' }}" />
+    </div>
+
+    <div class="form-group">
+      <label class="form-label" for="lumin_value">Lumin value</label>
+      <input class="form-input{% if errors.lumin_value %} form-input--error{% endif %}"
+             id="lumin_value" name="lumin_value" type="number" min="0"
+             value="{{ chore.lumin_value if chore else 0 }}" />
+    </div>
+
+    {% if not chore %}
+    <div class="form-group">
+      <label class="form-label" for="chore_type">Type</label>
+      <select class="form-select" id="chore_type" name="chore_type">
+        <option value="constant">Constant (assigned members)</option>
+        <option value="rotating">Rotating (scheduled members)</option>
+      </select>
+    </div>
+    {% else %}
+    <div class="form-group">
+      <label class="form-label">Type</label>
+      <input class="form-input" type="text" value="{{ chore.chore_type }}" disabled />
+      <input type="hidden" name="chore_type" value="{{ chore.chore_type }}" />
+    </div>
+    {% endif %}
+
+    <div class="form-group" id="assignee-group">
+      <label class="form-label">Assigned members <span class="text-muted">(constant chores)</span></label>
+      <div style="display:flex;flex-direction:column;gap:.35rem;">
+        {% for m in members %}
+        <label style="display:flex;align-items:center;gap:.5rem;cursor:pointer;">
+          <input type="checkbox" name="member_ids" value="{{ m.id }}"
+                 {% if chore and chore.chore_type == 'constant' and m.id in chore.assignee_ids %}checked{% endif %} />
+          <span class="member-dot" style="background:{{ m.color }};"></span>
+          {{ m.name }}
+        </label>
+        {% endfor %}
+      </div>
+    </div>
+
+    <div class="flex gap-sm" style="margin-top:1rem;">
+      <button type="submit" class="btn btn--primary">{{ 'Save changes' if chore else 'Create chore' }}</button>
+      <a href="{{ url_for('admin_views.chores_list') }}" class="btn btn--ghost">Cancel</a>
+    </div>
+  </form>
+</div>
+{% endblock %}

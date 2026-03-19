@@ -1,0 +1,69 @@
+{% extends "admin/base.html" %}
+{% block title %}Quests — Admin{% endblock %}
+
+{% block admin_content %}
+<div class="flex gap items-center mb" style="justify-content:space-between;">
+  <h1>Quests</h1>
+  <a href="{{ url_for('admin_views.quest_new_form') }}" class="btn btn--primary btn--sm">+ New quest</a>
+</div>
+
+<h2>Solo Quests</h2>
+<div class="card">
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr><th>Name</th><th>Member</th><th>Bonus</th><th>Active</th></tr>
+      </thead>
+      <tbody>
+        {% for q in solo_quests %}
+        <tr>
+          <td>{{ q.name }}</td>
+          <td class="text-muted text-sm">
+            {% for m in members if m.id == q.member_id %}{{ m.name }}{% endfor %}
+          </td>
+          <td><span class="lumin-badge">{{ q.bonus_lumins }}</span></td>
+          <td>
+            {% if q.is_active %}
+              <span class="badge badge--success">yes</span>
+            {% else %}
+              <span class="badge badge--danger">no</span>
+            {% endif %}
+          </td>
+        </tr>
+        {% else %}
+        <tr><td colspan="4" class="text-muted text-sm">No solo quests yet.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<h2 class="mt-lg">Group Quests</h2>
+<div class="card">
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr><th>Name</th><th>Bonus</th><th>Deadline</th><th>Active</th></tr>
+      </thead>
+      <tbody>
+        {% for gq in group_quests %}
+        <tr>
+          <td>{{ gq.name }}</td>
+          <td><span class="lumin-badge">{{ gq.bonus_lumins }}</span></td>
+          <td class="text-muted text-sm">{{ gq.deadline or '—' }}</td>
+          <td>
+            {% if gq.is_active %}
+              <span class="badge badge--success">yes</span>
+            {% else %}
+              <span class="badge badge--danger">no</span>
+            {% endif %}
+          </td>
+        </tr>
+        {% else %}
+        <tr><td colspan="4" class="text-muted text-sm">No group quests yet.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

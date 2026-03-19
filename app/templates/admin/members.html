@@ -1,0 +1,51 @@
+{% extends "admin/base.html" %}
+{% block title %}Members — Admin{% endblock %}
+
+{% block admin_content %}
+<div class="flex gap items-center mb" style="justify-content:space-between;">
+  <h1>Members</h1>
+  <a href="{{ url_for('admin_views.member_new_form') }}" class="btn btn--primary btn--sm">+ Add member</a>
+</div>
+
+<div class="card">
+  <div class="flex gap-sm" style="margin-bottom:.75rem;">
+    {% if include_inactive %}
+      <a href="{{ url_for('admin_views.members_list') }}" class="btn btn--ghost btn--sm">Hide inactive</a>
+    {% else %}
+      <a href="{{ url_for('admin_views.members_list', inactive='true') }}" class="btn btn--ghost btn--sm">Show inactive</a>
+    {% endif %}
+  </div>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr><th>Name</th><th>Username</th><th>Role</th><th>Balance</th><th>Status</th><th></th></tr>
+      </thead>
+      <tbody>
+        {% for m in members %}
+        <tr>
+          <td>
+            <div class="flex gap-sm items-center">
+              <span class="member-dot" style="background:{{ m.color }};"></span>
+              {{ m.name }}
+            </div>
+          </td>
+          <td class="text-muted">@{{ m.username }}</td>
+          <td><span class="badge badge--{{ 'primary' if m.role == 'parent' else 'muted' }}">{{ m.role }}</span></td>
+          <td><span class="lumin-badge">{{ m.balance }}</span></td>
+          <td>
+            {% if m.is_active %}
+              <span class="badge badge--success">active</span>
+            {% else %}
+              <span class="badge badge--danger">inactive</span>
+            {% endif %}
+          </td>
+          <td>
+            <a href="{{ url_for('admin_views.member_edit_form', member_id=m.id) }}" class="btn btn--ghost btn--sm">Edit</a>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

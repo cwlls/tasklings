@@ -23,10 +23,11 @@
 
   {% include "components/_nav.html" %}
 
+  <div id="toast-container" role="region" aria-live="polite" aria-label="Notifications"></div>
+
   {# HTMX -- loaded from CDN #}
   <script src="https://unpkg.com/htmx.org@2.0.4" integrity="sha384-HGfztofotfshcF7+8n44JQL2oJmowVChPTg48S+jvZoztPfvwD79OC/LTtG6dMp+" crossorigin="anonymous"></script>
   <script type="module" src="{{ url_for('static', filename='js/app.js') }}"></script>
-  <script src="{{ url_for('static', filename='js/sw-register.js') }}"></script>
 
   {% block extra_scripts %}{% endblock %}
 </body>

@@ -1,0 +1,95 @@
+{% extends "admin/base.html" %}
+{% block title %}{{ 'Edit' if member else 'New' }} Member — Admin{% endblock %}
+
+{% block admin_content %}
+<div class="flex gap items-center mb">
+  <a href="{{ url_for('admin_views.members_list') }}" class="btn btn--ghost btn--sm">&larr; Back</a>
+  <h1>{{ 'Edit' if member else 'New' }} Member</h1>
+</div>
+
+<div class="card" style="max-width:480px;">
+  <form method="post"
+        action="{{ url_for('admin_views.member_edit_post', member_id=member.id) if member else url_for('admin_views.member_new_post') }}">
+
+    {% if errors %}
+      {% for field, msg in errors.items() %}
+        <div class="form-error" style="margin-bottom:.5rem;">{{ msg }}</div>
+      {% endfor %}
+    {% endif %}
+
+    <div class="form-group">
+      <label class="form-label" for="name">Display name</label>
+      <input class="form-input{% if errors.name %} form-input--error{% endif %}"
+             id="name" name="name" type="text" required
+             value="{{ member.name if member else '' }}" />
+    </div>
+
+    {% if not member %}
+    <div class="form-group">
+      <label class="form-label" for="username">Username</label>
+      <input class="form-input{% if errors.username %} form-input--error{% endif %}"
+             id="username" name="username" type="text" required autocomplete="off"
+             value="" />
+    </div>
+    <div class="form-group">
+      <label class="form-label" for="password">Password</label>
+      <input class="form-input{% if errors.password %} form-input--error{% endif %}"
+             id="password" name="password" type="password" required autocomplete="new-password"
+             minlength="4" />
+    </div>
+    <div class="form-group">
+      <label class="form-label" for="role">Role</label>
+      <select class="form-select" id="role" name="role">
+        <option value="child">Child</option>
+        <option value="parent">Parent (admin)</option>
+      </select>
+    </div>
+    {% else %}
+    <div class="form-group">
+      <label class="form-label">Username</label>
+      <input class="form-input" type="text" value="{{ member.username }}" disabled />
+    </div>
+    <div class="form-group">
+      <label class="form-label" for="new_password">New password <span class="text-muted">(leave blank to keep)</span></label>
+      <input class="form-input{% if errors.new_password %} form-input--error{% endif %}"
+             id="new_password" name="new_password" type="password" autocomplete="new-password" />
+    </div>
+    <div class="form-group">
+      <label class="form-label" for="is_active">Status</label>
+      <select class="form-select" id="is_active" name="is_active">
+        <option value="1" {% if member.is_active %}selected{% endif %}>Active</option>
+        <option value="0" {% if not member.is_active %}selected{% endif %}>Inactive</option>
+      </select>
+    </div>
+    {% endif %}
+
+    <div class="form-group">
+      <label class="form-label" for="color">Theme color</label>
+      <div class="flex gap-sm items-center">
+        <input class="form-color" id="color" name="color" type="color"
+               value="{{ member.color if member else '#4A90D9' }}" />
+        <span class="text-sm text-muted" id="color-hex">{{ member.color if member else '#4A90D9' }}</span>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label" for="avatar">Avatar URL <span class="text-muted">(optional)</span></label>
+      <input class="form-input" id="avatar" name="avatar" type="url"
+             value="{{ member.avatar if member else '' }}" />
+    </div>
+
+    <div class="flex gap-sm" style="margin-top:1rem;">
+      <button type="submit" class="btn btn--primary">{{ 'Save changes' if member else 'Create member' }}</button>
+      <a href="{{ url_for('admin_views.members_list') }}" class="btn btn--ghost">Cancel</a>
+    </div>
+  </form>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+  const c = document.getElementById("color");
+  const h = document.getElementById("color-hex");
+  if (c && h) c.addEventListener("input", () => h.textContent = c.value);
+</script>
+{% endblock %}

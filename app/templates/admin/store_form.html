@@ -1,0 +1,79 @@
+{% extends "admin/base.html" %}
+{% block title %}{{ 'Edit' if item else 'New' }} Store Item — Admin{% endblock %}
+
+{% block admin_content %}
+<div class="flex gap items-center mb">
+  <a href="{{ url_for('admin_views.store_list') }}" class="btn btn--ghost btn--sm">&larr; Back</a>
+  <h1>{{ 'Edit' if item else 'New' }} Store Item</h1>
+</div>
+
+<div class="card" style="max-width:520px;">
+  <form method="post"
+        action="{{ url_for('admin_views.store_item_edit_post', item_id=item.id) if item else url_for('admin_views.store_item_new_post') }}">
+
+    {% if errors %}
+      {% for field, msg in errors.items() %}
+        <div class="form-error" style="margin-bottom:.5rem;">{{ msg }}</div>
+      {% endfor %}
+    {% endif %}
+
+    <div class="form-group">
+      <label class="form-label" for="title">Title</label>
+      <input class="form-input{% if errors.title %} form-input--error{% endif %}"
+             id="title" name="title" type="text" required
+             value="{{ item.title if item else '' }}" />
+    </div>
+
+    <div class="form-group">
+      <label class="form-label" for="description">Description <span class="text-muted">(optional)</span></label>
+      <textarea class="form-textarea" id="description" name="description" rows="2">{{ item.description if item else '' }}</textarea>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label" for="icon">Icon / emoji <span class="text-muted">(optional)</span></label>
+      <input class="form-input" id="icon" name="icon" type="text" maxlength="8"
+             value="{{ item.icon if item else '' }}" />
+    </div>
+
+    <div class="form-group">
+      <label class="form-label" for="price">Price (Lumins)</label>
+      <input class="form-input{% if errors.price %} form-input--error{% endif %}"
+             id="price" name="price" type="number" min="0"
+             value="{{ item.price if item else 0 }}" />
+    </div>
+
+    <div class="form-group">
+      <label class="form-label" for="stock">Stock <span class="text-muted">(leave blank = unlimited)</span></label>
+      <input class="form-input" id="stock" name="stock" type="number" min="0"
+             value="{{ item.stock if item and item.stock is not none else '' }}" />
+    </div>
+
+    <div class="form-group">
+      <label style="display:flex;align-items:center;gap:.5rem;cursor:pointer;">
+        <input type="checkbox" name="is_available" value="1"
+               {% if not item or item.is_available %}checked{% endif %} />
+        Available for purchase
+      </label>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Visible to <span class="text-muted">(leave all unchecked = everyone)</span></label>
+      <div style="display:flex;flex-direction:column;gap:.35rem;">
+        {% for m in members %}
+        <label style="display:flex;align-items:center;gap:.5rem;cursor:pointer;">
+          <input type="checkbox" name="member_ids" value="{{ m.id }}"
+                 {% if item and m.id in item.visibility_member_ids %}checked{% endif %} />
+          <span class="member-dot" style="background:{{ m.color }};"></span>
+          {{ m.name }}
+        </label>
+        {% endfor %}
+      </div>
+    </div>
+
+    <div class="flex gap-sm" style="margin-top:1rem;">
+      <button type="submit" class="btn btn--primary">{{ 'Save changes' if item else 'Create item' }}</button>
+      <a href="{{ url_for('admin_views.store_list') }}" class="btn btn--ghost">Cancel</a>
+    </div>
+  </form>
+</div>
+{% endblock %}

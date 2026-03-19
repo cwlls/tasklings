@@ -1,0 +1,74 @@
+{% extends "admin/base.html" %}
+{% block title %}API Tokens — Admin{% endblock %}
+
+{% block admin_content %}
+<h1>API Tokens</h1>
+
+{% if new_token %}
+<div class="card" style="border-left:4px solid var(--color-success);margin-bottom:1rem;">
+  <h3>Token created: {{ new_token_label }}</h3>
+  <p class="text-muted text-sm">Copy this token now — it will not be shown again.</p>
+  <code style="display:block;background:var(--color-surface-raised);padding:.6rem .9rem;
+               border-radius:var(--radius-sm);word-break:break-all;font-family:var(--font-mono);
+               font-size:.85rem;margin-top:.5rem;">{{ new_token }}</code>
+</div>
+{% endif %}
+
+<div class="card" style="max-width:420px;margin-bottom:1.25rem;">
+  <h2>Create token</h2>
+  {% if errors %}
+    {% for field, msg in errors.items() %}
+      <div class="form-error" style="margin-bottom:.5rem;">{{ msg }}</div>
+    {% endfor %}
+  {% endif %}
+  <form method="post" action="{{ url_for('admin_views.token_create') }}">
+    <div class="form-group">
+      <label class="form-label" for="label">Label</label>
+      <input class="form-input" id="label" name="label" type="text" required placeholder="e.g. Home automation" />
+    </div>
+    <div class="form-group">
+      <label class="form-label" for="expires_at">Expires <span class="text-muted">(optional, ISO date)</span></label>
+      <input class="form-input" id="expires_at" name="expires_at" type="date" />
+    </div>
+    <button type="submit" class="btn btn--primary">Create token</button>
+  </form>
+</div>
+
+<div class="card">
+  <h2>Active tokens</h2>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr><th>Label</th><th>Created</th><th>Expires</th><th>Status</th><th></th></tr>
+      </thead>
+      <tbody>
+        {% for t in tokens %}
+        <tr>
+          <td>{{ t.label }}</td>
+          <td class="text-muted text-sm">{{ t.created_at[:10] }}</td>
+          <td class="text-muted text-sm">{{ t.expires_at[:10] if t.expires_at else '—' }}</td>
+          <td>
+            {% if t.is_revoked %}
+              <span class="badge badge--danger">revoked</span>
+            {% else %}
+              <span class="badge badge--success">active</span>
+            {% endif %}
+          </td>
+          <td>
+            {% if not t.is_revoked %}
+            <form method="post" action="{{ url_for('admin_views.token_revoke', token_id=t.id) }}"
+                  onsubmit="return confirm('Revoke this token?')">
+              <button type="submit" class="btn btn--danger btn--sm">Revoke</button>
+            </form>
+            {% endif %}
+          </td>
+        </tr>
+        {% endfor %}
+        {% if not tokens %}
+        <tr><td colspan="5" class="text-muted text-sm">No tokens yet.</td></tr>
+        {% endif %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}
