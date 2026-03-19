@@ -1,0 +1,11 @@
+{
+  "name": "Tasklings",
+  "short_name": "Tasklings",
+  "description": "Family chore management with Lumins rewards",
+  "start_url": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "theme_color": "#4A90D9",
+  "background_color": "#f8f9fa",
+  "icons": []
+}

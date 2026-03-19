@@ -1,0 +1,66 @@
+{#
+  Bottom navigation bar.
+  Expects `current_user` to be available in context (set by auth middleware in Phase 3).
+  Until auth is wired up, current_user defaults to None and admin link is hidden.
+#}
+<nav class="bottom-nav" aria-label="Main navigation">
+  <a href="{{ url_for('index.index') }}" class="nav-item">
+    <span class="nav-icon" aria-hidden="true">&#x2713;</span>
+    <span class="nav-label">My Runlist</span>
+  </a>
+  <a href="/quests" class="nav-item">
+    <span class="nav-icon" aria-hidden="true">&#x2605;</span>
+    <span class="nav-label">Quests</span>
+  </a>
+  <a href="/store" class="nav-item">
+    <span class="nav-icon" aria-hidden="true">&#x1F6D2;</span>
+    <span class="nav-label">Store</span>
+  </a>
+  <a href="/profile" class="nav-item">
+    <span class="nav-icon" aria-hidden="true">&#x1F464;</span>
+    <span class="nav-label">Profile</span>
+  </a>
+  {% if current_user and current_user.role == 'parent' %}
+  <a href="/admin" class="nav-item nav-item--admin">
+    <span class="nav-icon" aria-hidden="true">&#x2699;</span>
+    <span class="nav-label">Admin</span>
+  </a>
+  {% endif %}
+</nav>
+
+<style>
+  .bottom-nav {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: var(--nav-height, 64px);
+    background: var(--color-surface, #fff);
+    border-top: 1px solid var(--color-border, #e5e7eb);
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    padding: 0 0.5rem;
+    padding-bottom: env(safe-area-inset-bottom, 0);
+    z-index: 100;
+  }
+  .nav-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    text-decoration: none;
+    color: var(--color-text-muted, #6b7280);
+    font-size: 0.7rem;
+    padding: 0.25rem 0.5rem;
+    border-radius: 8px;
+    transition: color 0.15s;
+  }
+  .nav-item:hover, .nav-item[aria-current="page"] {
+    color: var(--color-primary, #4A90D9);
+  }
+  .nav-icon {
+    font-size: 1.3rem;
+    line-height: 1;
+  }
+</style>

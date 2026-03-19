@@ -61,6 +61,13 @@ local_settings.py
 db.sqlite3
 db.sqlite3-journal
 
+# Tasklings
+tasklings.db
+tasklings.db-wal
+tasklings.db-shm
+*.db-wal
+*.db-shm
+
 # Flask stuff:
 instance/
 .webassets-cache
@@ -205,3 +212,6 @@ cython_debug/
 marimo/_static/
 marimo/_lsp/
 __marimo__/
+
+# ZiggyStack
+.state/

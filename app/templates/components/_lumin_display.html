@@ -1,0 +1,32 @@
+{#
+  Lumin balance display partial.
+  Variables:
+    balance (integer) -- the member's current Lumin balance
+    size    (string, optional) -- "sm" | "md" | "lg" -- defaults to "md"
+#}
+{% set _size = size | default("md") %}
+<span class="lumin-display lumin-display--{{ _size }}" aria-label="{{ balance }} Lumins">
+  <span class="lumin-icon" aria-hidden="true">&#x2728;</span>
+  <span class="lumin-value">{{ balance | int | default(0) }}</span>
+  <span class="lumin-label">Lumins</span>
+</span>
+
+<style>
+  .lumin-display {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-weight: 600;
+    color: var(--color-accent, #f5c842);
+    white-space: nowrap;
+  }
+  .lumin-display--sm { font-size: 0.85rem; }
+  .lumin-display--md { font-size: 1rem; }
+  .lumin-display--lg { font-size: 1.4rem; }
+  .lumin-icon { line-height: 1; }
+  .lumin-label {
+    font-size: 0.75em;
+    font-weight: 400;
+    color: var(--color-text-muted, #6b7280);
+  }
+</style>

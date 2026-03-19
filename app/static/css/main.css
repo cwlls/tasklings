@@ -1,0 +1,47 @@
+/* Tasklings -- main.css
+ * Mobile-first stylesheet.
+ * Expanded in Phase 9 (UI polish).
+ */
+
+*, *::before, *::after {
+    box-sizing: border-box;
+}
+
+:root {
+    --color-primary: #4A90D9;
+    --color-primary-dark: #2c6fad;
+    --color-accent: #f5c842;
+    --color-bg: #f8f9fa;
+    --color-surface: #ffffff;
+    --color-text: #1a1a2e;
+    --color-text-muted: #6b7280;
+    --color-border: #e5e7eb;
+    --color-success: #22c55e;
+    --color-danger: #ef4444;
+    --color-warning: #f59e0b;
+    --nav-height: 64px;
+    --radius: 12px;
+    --font-sans: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+html, body {
+    margin: 0;
+    padding: 0;
+    font-family: var(--font-sans);
+    background: var(--color-bg);
+    color: var(--color-text);
+    font-size: 16px;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+}
+
+body {
+    padding-bottom: var(--nav-height);
+    min-height: 100dvh;
+}
+
+main {
+    max-width: 640px;
+    margin: 0 auto;
+    padding: 1rem;
+}
