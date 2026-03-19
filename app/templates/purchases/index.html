@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+
+{% block title %}My Purchases — Tasklings{% endblock %}
+
+{% block content %}
+<div class="purchases-page">
+
+  <header class="purchases-header">
+    <h1 class="purchases-header__title">My Purchases</h1>
+  </header>
+
+  {% if purchases %}
+    <ul class="purchase-list">
+      {% for p in purchases %}
+        <li class="purchase-item purchase-item--{{ p.status }}">
+          <span class="purchase-item__icon" aria-hidden="true">
+            {{ p.item_icon or '🎁' }}
+          </span>
+          <div class="purchase-item__body">
+            <span class="purchase-item__title">{{ p.item_title }}</span>
+            <span class="purchase-item__date">{{ p.purchased_at[:10] }}</span>
+          </div>
+          <div class="purchase-item__meta">
+            <span class="purchase-item__price">✨ {{ p.price_paid }}</span>
+            <span class="purchase-item__status purchase-item__status--{{ p.status }}">
+              {% if p.status == 'purchased' %}Pending{% elif p.status == 'redeemed' %}Redeemed{% else %}{{ p.status | capitalize }}{% endif %}
+            </span>
+          </div>
+        </li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p class="purchases-empty">You haven't purchased anything yet.</p>
+  {% endif %}
+
+</div>
+{% endblock %}
+
+{% block extra_head %}
+<style>
+  .purchases-page {
+    padding: 1rem;
+    max-width: 600px;
+    margin: 0 auto;
+  }
+  .purchases-header { margin-bottom: 1rem; }
+  .purchases-header__title { font-size: 1.4rem; font-weight: 700; margin: 0; }
+  .purchases-empty { color: var(--color-text-muted, #6b7280); text-align: center; padding: 2rem; }
+
+  .purchase-list { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 0.5rem; }
+  .purchase-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem 1rem;
+    background: var(--color-surface, #fff);
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.07);
+  }
+  .purchase-item__icon { font-size: 1.5rem; flex-shrink: 0; }
+  .purchase-item__body { flex: 1; min-width: 0; }
+  .purchase-item__title { display: block; font-weight: 600; }
+  .purchase-item__date  { display: block; font-size: 0.78rem; color: var(--color-text-muted, #6b7280); }
+  .purchase-item__meta  { display: flex; flex-direction: column; align-items: flex-end; gap: 0.2rem; }
+  .purchase-item__price { font-size: 0.85rem; font-weight: 700; color: var(--color-accent, #f5c842); }
+  .purchase-item__status {
+    font-size: 0.7rem;
+    font-weight: 700;
+    padding: 0.15rem 0.45rem;
+    border-radius: 99px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+  .purchase-item__status--purchased { background: #fef9c3; color: #854d0e; }
+  .purchase-item__status--redeemed  { background: #dcfce7; color: #166534; }
+</style>
+{% endblock %}

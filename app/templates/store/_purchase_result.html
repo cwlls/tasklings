@@ -1,0 +1,66 @@
+{#
+  Inline purchase result partial -- swaps the item card after an HTMX purchase.
+  Variables:
+    item     (dict|None) -- store_item row (for re-rendering the card)
+    purchase (dict|None) -- purchase row on success
+    error    (str|None)  -- error message on failure
+    balance  (int)       -- updated member balance
+#}
+{% if item %}
+  {% set can_afford   = balance >= item.price %}
+  {% set out_of_stock = item.stock is not none and item.stock <= 0 %}
+  {% set unavailable  = not item.is_available %}
+  {% set blocked      = out_of_stock or unavailable or not can_afford %}
+
+  <article
+    class="store-card{% if blocked %} store-card--blocked{% endif %} {% if purchase %}store-card--purchased{% endif %} {% if error %}store-card--error{% endif %}"
+    id="store-item-{{ item.id }}"
+  >
+    <div class="store-card__icon" aria-hidden="true">{{ item.icon or '🎁' }}</div>
+
+    <div class="store-card__body">
+      <h3 class="store-card__title">{{ item.title }}</h3>
+      {% if item.description %}
+        <p class="store-card__desc">{{ item.description }}</p>
+      {% endif %}
+
+      {% if purchase %}
+        <p class="store-card__result store-card__result--ok" role="status">
+          Purchased! ✅ New balance: ✨ {{ balance }}
+        </p>
+      {% elif error %}
+        <p class="store-card__result store-card__result--err" role="alert">
+          {{ error }}
+        </p>
+      {% endif %}
+    </div>
+
+    <div class="store-card__footer">
+      <span class="store-card__price" aria-label="{{ item.price }} Lumins">
+        ✨ {{ item.price }}
+      </span>
+
+      {% if purchase %}
+        <span class="store-card__badge store-card__badge--purchased">Purchased</span>
+      {% elif unavailable %}
+        <span class="store-card__badge store-card__badge--unavailable">Unavailable</span>
+      {% elif out_of_stock %}
+        <button class="store-card__buy-btn" disabled aria-disabled="true">Out of stock</button>
+      {% elif not can_afford %}
+        <button class="store-card__buy-btn" disabled aria-disabled="true">Can't afford</button>
+      {% else %}
+        <button
+          class="store-card__buy-btn"
+          hx-post="/store/{{ item.id }}/buy"
+          hx-target="#store-item-{{ item.id }}"
+          hx-swap="outerHTML"
+          hx-confirm="Buy {{ item.title }} for {{ item.price }} Lumins?"
+        >
+          Buy
+        </button>
+      {% endif %}
+    </div>
+  </article>
+{% else %}
+  <p role="alert">Something went wrong. Please refresh the page.</p>
+{% endif %}

@@ -1,0 +1,15 @@
+{#
+  Store item grid partial -- used for HTMX full-grid refreshes.
+  Variables:
+    items   (list[dict]) -- store item rows
+    balance (int)        -- current member balance
+#}
+<section class="store-grid" id="store-grid">
+  {% if items %}
+    {% for item in items %}
+      {% include "store/_item_card.html" %}
+    {% endfor %}
+  {% else %}
+    <p class="store-grid__empty">No items in the store yet.</p>
+  {% endif %}
+</section>

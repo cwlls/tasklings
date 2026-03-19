@@ -1,0 +1,57 @@
+{#
+  Single store item card.
+  Variables:
+    item    (dict) -- store_item row
+    balance (int)  -- current member's Lumin balance
+#}
+{% set can_afford   = balance >= item.price %}
+{% set out_of_stock = item.stock is not none and item.stock <= 0 %}
+{% set unavailable  = not item.is_available %}
+{% set blocked      = out_of_stock or unavailable or not can_afford %}
+
+<article
+  class="store-card{% if blocked %} store-card--blocked{% endif %}"
+  id="store-item-{{ item.id }}"
+>
+  <div class="store-card__icon" aria-hidden="true">{{ item.icon or '🎁' }}</div>
+
+  <div class="store-card__body">
+    <h3 class="store-card__title">{{ item.title }}</h3>
+    {% if item.description %}
+      <p class="store-card__desc">{{ item.description }}</p>
+    {% endif %}
+  </div>
+
+  <div class="store-card__footer">
+    <span class="store-card__price" aria-label="{{ item.price }} Lumins">
+      ✨ {{ item.price }}
+    </span>
+
+    {% if item.stock is not none %}
+      <span class="store-card__stock{% if out_of_stock %} store-card__stock--empty{% endif %}">
+        {% if out_of_stock %}Out of stock{% else %}{{ item.stock }} left{% endif %}
+      </span>
+    {% endif %}
+
+    {% if unavailable %}
+      <span class="store-card__badge store-card__badge--unavailable">Unavailable</span>
+    {% elif out_of_stock %}
+      <button class="store-card__buy-btn" disabled aria-disabled="true">Out of stock</button>
+    {% elif not can_afford %}
+      <button class="store-card__buy-btn" disabled aria-disabled="true"
+              title="You need {{ item.price - balance }} more Lumins">
+        Can't afford
+      </button>
+    {% else %}
+      <button
+        class="store-card__buy-btn"
+        hx-post="/store/{{ item.id }}/buy"
+        hx-target="#store-item-{{ item.id }}"
+        hx-swap="outerHTML"
+        hx-confirm="Buy {{ item.title }} for {{ item.price }} Lumins?"
+      >
+        Buy
+      </button>
+    {% endif %}
+  </div>
+</article>
