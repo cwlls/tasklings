@@ -96,9 +96,9 @@ async def login_post():
     # On success: redirect to home (full page or HTMX redirect header).
     if _is_htmx():
         response = await make_response("", 204)
-        response.headers["HX-Redirect"] = url_for("index.index")
+        response.headers["HX-Redirect"] = url_for("runlist_views.index")
     else:
-        response = await make_response(redirect(url_for("index.index")))
+        response = await make_response(redirect(url_for("runlist_views.index")))
 
     _set_session_cookie(response, result["session_id"])
     return response
