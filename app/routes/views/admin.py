@@ -73,7 +73,7 @@ async def dashboard():
     from datetime import datetime
     from zoneinfo import ZoneInfo
     from app.services import assignment_engine
-    tz = ZoneInfo(household.get("timezone", "America/Chicago"))
+    tz = ZoneInfo(household["timezone"] or "America/Chicago")
     today = datetime.now(tz).date().isoformat()
     assignments_today = await fetch_all(
         """

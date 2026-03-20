@@ -22,7 +22,7 @@
 
   <div class="quest-card__progress-bar-wrap">
     <div class="quest-card__progress-bar">
-      <div class="quest-card__progress-fill" style="width: {{ pct }}%"></div>
+      <div class="quest-card__progress-fill{% if complete %} progress-bar__fill--complete{% endif %}" style="width: {{ pct }}%"></div>
     </div>
     <span class="quest-card__progress-label">
       {{ quest.done_chores }} / {{ quest.total_chores }}

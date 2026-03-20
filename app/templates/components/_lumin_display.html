@@ -2,14 +2,21 @@
   Lumin balance display partial.
   Variables:
     balance (integer) -- the member's current Lumin balance
-    size    (string, optional) -- "sm" | "md" | "lg" -- defaults to "md"
+    size    (string, optional) -- "sm" | "md" | "lg" | "hero" -- defaults to "md"
 #}
 {% set _size = size | default("md") %}
+{% if _size == "hero" %}
+<div class="lumin-display lumin-display--hero" aria-label="{{ balance }} Lumins">
+  <div class="lumin-hero-amount" data-lumin-balance>{{ balance | int | default(0) }}</div>
+  <div class="lumin-hero-label">✨ Lumins</div>
+</div>
+{% else %}
 <span class="lumin-display lumin-display--{{ _size }}" aria-label="{{ balance }} Lumins">
   <span class="lumin-icon" aria-hidden="true">&#x2728;</span>
-  <span class="lumin-value">{{ balance | int | default(0) }}</span>
+  <span class="lumin-value" data-lumin-balance>{{ balance | int | default(0) }}</span>
   <span class="lumin-label">Lumins</span>
 </span>
+{% endif %}
 
 <style>
   .lumin-display {
@@ -23,6 +30,11 @@
   .lumin-display--sm { font-size: 0.85rem; }
   .lumin-display--md { font-size: 1rem; }
   .lumin-display--lg { font-size: 1.4rem; }
+  .lumin-display--hero {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+  }
   .lumin-icon { line-height: 1; }
   .lumin-label {
     font-size: 0.75em;

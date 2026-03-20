@@ -84,6 +84,16 @@ document.addEventListener("htmx:afterSwap", (event) => {
       () => target.classList.remove("check-complete"),
       { once: true }
     );
+
+    // Spawn lumin burst popup if the item has a lumin value.
+    const luminValue = target.dataset.luminValue;
+    if (luminValue && parseInt(luminValue, 10) > 0) {
+      const popup = document.createElement("div");
+      popup.className = "lumin-earned-popup";
+      popup.textContent = `+${luminValue} ✨`;
+      target.appendChild(popup);
+      popup.addEventListener("animationend", () => popup.remove(), { once: true });
+    }
   }
 
   // Balance counter refresh via data attribute on swapped content.

@@ -39,11 +39,6 @@ def _is_htmx() -> bool:
     return request.headers.get("HX-Request") == "true"
 
 
-def _is_secure() -> bool:
-    from quart import current_app
-    return not current_app.config.get("TESTING", False) and not current_app.debug
-
-
 def _set_session_cookie(response, session_id: str):
     from quart import current_app
     response.set_cookie(
@@ -51,7 +46,7 @@ def _set_session_cookie(response, session_id: str):
         session_id,
         httponly=True,
         samesite="Lax",
-        secure=_is_secure(),
+        secure=current_app.config.get("COOKIE_SECURE", False),
         max_age=int(current_app.config.get("SESSION_LIFETIME_HOURS", 72)) * 3600,
     )
     return response
@@ -69,7 +64,7 @@ def _clear_session_cookie(response):
 @auth_views_bp.get("/login")
 async def login_get():
     if g.get("current_user"):
-        return redirect(url_for("index.index"))
+        return redirect(url_for("runlist_views.runlist"))
     return await render_template("auth/login.html", error=None)
 
 
@@ -96,9 +91,9 @@ async def login_post():
     # On success: redirect to home (full page or HTMX redirect header).
     if _is_htmx():
         response = await make_response("", 204)
-        response.headers["HX-Redirect"] = url_for("index.index")
+        response.headers["HX-Redirect"] = url_for("runlist_views.runlist")
     else:
-        response = await make_response(redirect(url_for("index.index")))
+        response = await make_response(redirect(url_for("runlist_views.runlist")))
 
     _set_session_cookie(response, result["session_id"])
     return response

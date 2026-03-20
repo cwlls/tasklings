@@ -23,6 +23,7 @@ def create_app(config: Config | None = None) -> Quart:
         HOUSEHOLD_TIMEZONE=cfg.HOUSEHOLD_TIMEZONE,
         BCRYPT_ROUNDS=cfg.BCRYPT_ROUNDS,
         TESTING=cfg.TESTING,
+        COOKIE_SECURE=cfg.COOKIE_SECURE,
         SMTP_HOST=cfg.SMTP_HOST,
         SMTP_PORT=cfg.SMTP_PORT,
         SMTP_USERNAME=cfg.SMTP_USERNAME,

@@ -32,6 +32,11 @@ class Config:
     TESTING: bool = field(
         default_factory=lambda: os.environ.get("TESTING", "").lower() in ("1", "true")
     )
+    # Set to true only when serving over HTTPS. Defaults to false so the app
+    # works over plain HTTP on a local network without cookie issues.
+    COOKIE_SECURE: bool = field(
+        default_factory=lambda: os.environ.get("COOKIE_SECURE", "").lower() in ("1", "true")
+    )
     # Optional email settings for password reset delivery
     SMTP_HOST: str = field(
         default_factory=lambda: os.environ.get("SMTP_HOST", "")

@@ -8,6 +8,8 @@
   class="chore-item chore-item--{{ assignment.status }}"
   id="chore-{{ assignment.id }}"
   data-assignment-id="{{ assignment.id }}"
+  {% if is_done %}data-lumin-value="{{ assignment.lumin_value }}"{% endif %}
+  style="position: relative;"
 >
   <span class="chore-item__icon" aria-hidden="true">
     {{ assignment.icon or '📋' }}

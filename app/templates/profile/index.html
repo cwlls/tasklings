@@ -113,6 +113,11 @@
   {% endfor %}
 </div>
 {% endif %}
+
+{# ── Sign out ──────────────────────────────────────────────────────────────── #}
+<div style="margin-top:1rem;padding-bottom:1rem;">
+  <a href="{{ url_for('auth_views.logout_get') }}" class="btn btn--danger btn--full">Sign out</a>
+</div>
 {% endblock %}
 
 {% block extra_scripts %}

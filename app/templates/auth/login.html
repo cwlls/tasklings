@@ -130,6 +130,25 @@
     color: var(--color-primary);
     text-decoration: none;
   }
+
+  .auth-logo-mark-icon {
+    width: 64px;
+    height: 64px;
+    background: linear-gradient(135deg, #4A90D9 0%, #6aabf0 40%, #f5c842 100%);
+    border-radius: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    color: white;
+    margin: 0 auto 0.75rem;
+    box-shadow: 0 8px 32px rgba(74, 144, 217, 0.4), 0 2px 8px rgba(0,0,0,0.3);
+    transform: rotate(-4deg);
+  }
+  .auth-logo-mark-icon:hover {
+    transform: rotate(0deg) scale(1.05);
+    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
 </style>
 {% endblock %}
 
@@ -138,7 +157,7 @@
   <div class="auth-card">
 
     <div class="auth-logo">
-      <span class="auth-logo-mark">&#x2728;</span>
+      <div class="auth-logo-mark-icon">✦</div>
       <span class="auth-logo-name">Tasklings</span>
       <p class="auth-tagline">Earn Lumins. Complete your Runlist.</p>
     </div>

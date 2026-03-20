@@ -9,7 +9,7 @@
   <header class="store-header">
     <h1 class="store-header__title">Store</h1>
     <div class="store-header__balance">
-      {% with balance=balance %}
+      {% with balance=balance, size="hero" %}
         {% include "components/_lumin_display.html" %}
       {% endwith %}
     </div>

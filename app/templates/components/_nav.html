@@ -56,7 +56,15 @@
     border-radius: 8px;
     transition: color 0.15s;
   }
-  .nav-item:hover, .nav-item[aria-current="page"] {
+  .nav-item:hover {
+    color: var(--color-primary, #4A90D9);
+  }
+  .nav-item--active,
+  .nav-item[aria-current="page"],
+  .nav-item.active {
+    background: rgba(74, 144, 217, 0.12);
+    border-radius: 10px;
+    padding: 4px 10px;
     color: var(--color-primary, #4A90D9);
   }
   .nav-icon {

@@ -12,7 +12,7 @@
       <p class="runlist-header__date">{{ today }}</p>
     </div>
     <div class="runlist-header__balance">
-      {% with balance=balance %}
+      {% with balance=balance, size="hero" %}
         {% include "components/_lumin_display.html" %}
       {% endwith %}
     </div>
@@ -25,7 +25,7 @@
   {% if total > 0 %}
     <div class="runlist-progress" aria-label="{{ done }} of {{ total }} chores complete">
       <div
-        class="runlist-progress__bar"
+        class="runlist-progress__bar{% if done == total and total > 0 %} progress-bar__fill--complete{% endif %}"
         style="width: {{ ((done / total) * 100) | int }}%"
         role="progressbar"
         aria-valuenow="{{ done }}"

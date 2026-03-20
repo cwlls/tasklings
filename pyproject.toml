@@ -15,6 +15,10 @@ dependencies = [
     "itsdangerous>=2.1",
 ]
 
+[project.scripts]
+reset-admin = "scripts.reset_admin:main"
+serve = "scripts.serve:main"
+
 [tool.hatch.build.targets.wheel]
 packages = ["app"]
 
